@@ -11,7 +11,7 @@ setuptools.setup(
         description="Minimal terminal canvas",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        url="https://github.com/LukasDrsman/term-canvas-py",
+        url="https://github.com/LukasDrsman/pytermcanvas",
         packages=setuptools.find_packages(),
         classifiers=[
             "Programming Language :: Python :: 3",
