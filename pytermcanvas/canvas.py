@@ -2,16 +2,16 @@ import cursor
 from PIL import Image
 
 class TerminalCanvas:
-    def __init__(self, rows, cols, arender=True, empty=' '):
-        self.cols = cols
-        self.rows = rows
+    def __init__(self, xsize, ysize, auto_render=True, empty=' '):
+        self.cols = xsize
+        self.rows = ysize
         self.data = []
-        self.arender = arender
+        self.auto_render = auto_render
         self.empty = empty
         self.clear()
     
     def autoRender(self):
-        if(self.arender == True):
+        if(self.auto_render == True):
             self.render()
 
     def render(self):
@@ -26,6 +26,7 @@ class TerminalCanvas:
                 print("\n",end="")
         except:
             cursor.show()
+        cursor.show()
 
     def clear(self):
         self.data.clear()
@@ -33,17 +34,17 @@ class TerminalCanvas:
             self.data.append(self.empty)
         self.autoRender()
 
-    def insertRow(self, row, row_data, offset=0):  
+    def insertRow(self, y, row_data, offset=0):  
         if(type(row_data) is list or type(row_data) is tuple):
             row_arr = row_data
         else:
             row_arr = list(row_data)
 
         for i in range(len(row_arr)):
-            self.data[i+(self.cols * row)+offset] = row_arr[i]
+            self.data[i+(self.cols * y)+offset] = row_arr[i]
         self.autoRender()
 
-    def insertCol(self, col, col_data, offset=0):
+    def insertCol(self, x, col_data, offset=0):
         if(type(col_data) is list or type(col_data) is tuple):
             col_arr = col_data
         else:
@@ -51,66 +52,64 @@ class TerminalCanvas:
 
         for i in range(self.rows):
             try:
-                self.data[(i+offset) * self.cols + col] = col_arr[i]
+                self.data[(i+offset) * self.cols + x] = col_arr[i]
             except:
                 break
         self.autoRender()
 
-    def setChar(self, row, col, char):
-        self.data[(self.cols*row) + col] = char
+    def setChar(self, x, y, char):
+        self.data[(self.cols*y) + x] = char
         self.autoRender()
 
-    def getChar(self, row, col):
-        return self.data[(self.cols*row) + col]
+    def getChar(self, x, y):
+        return self.data[(self.cols*y) + x]
 
-    def getRow(self, row):
+    def getRow(self, y):
         return_data = []
         for i in range(self.cols):
-            return_data.append(self.data[(row * self.cols) + i])
+            return_data.append(self.data[(y * self.cols) + i])
         return return_data
 
-    def getCol(self, col):
+    def getCol(self, x):
         return_data = []
         for i in range(self.rows):
-            return_data.append(self.data[i * self.cols + col])
+            return_data.append(self.data[i * self.cols + x])
         return return_data
 
-    def drawImage(self, path, mode="_bg", char=' ', size=(10,10)):
-        trender = self.arender
-        self.arender = False
+    def drawImage(self, path, mode="bg", size=(10,10), char=' '):
+        temp_render = self.auto_render
+        self.auto_render = False
         image = Image.open(path)
-        image = image.resize((size[1], size[0]), Image.ANTIALIAS)
-        if((size[0] * size[1]) > (self.cols * self.rows)):
-            self.resize(size[0], size[1])
-        for x in range(size[1]):
-            for y in range(size[0]):
+        image = image.resize((size[0], size[1]), Image.ANTIALIAS)
+        for x in range(size[0]):
+            for y in range(size[1]):
                 pixel = image.getpixel((x, y))
                 r = pixel[0]
                 g = pixel[1]
                 b = pixel[2]
-                if(mode == "_fg"):
+                if(mode == "fg"):
                     color_char = "\x1b[38;2;%d;%d;%dm%c\x1b[0m" % (r, g, b, char)
-                elif(mode == "_bg"):
+                elif(mode == "bg"):
                     color_char = "\x1b[48;2;%d;%d;%dm%c\x1b[0m" % (r, g, b, char)
-                self.setChar(y, x, color_char)
+                self.setChar(x, y, color_char)
 
-        self.arender = trender
+        self.auto_render = temp_render
         self.autoRender()
 
-    def drawBlock(self, row, col, w, h, mode="_bg", char=' ', color=(255, 255, 255)):
-        trender = self.arender
-        self.arender = False
+    def drawBlock(self, x, y, w, h, mode="bg", char=' ', color=(255, 255, 255)):
+        temp_render = self.auto_render
+        self.auto_render = False
         for i in range(h):
-            if(mode == "_fg"):
+            if(mode == "fg"):
                 color_char = "\x1b[38;2;%d;%d;%dm%c\x1b[0m" % (color[0], color[1], color[2], char)
                 self.insertRow(i+row, [color_char]*w, col)              
-            elif(mode == "_bg"):
+            elif(mode == "bg"):
                 color_char = "\x1b[48;2;%d;%d;%dm%c\x1b[0m" % (color[0], color[1], color[2], char)
                 self.insertRow(i+row, [color_char]*w, col)
-        self.arender = trender
+        self.auto_render = temp_render
         self.autoRender()
 
-    def resize(self, rows, cols):
-        self.rows = rows
-        self.cols = cols
+    def resize(self, xsize, ysize):
+        self.rows = ysize
+        self.cols = xsize
         self.clear()
