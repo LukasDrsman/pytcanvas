@@ -1,1 +1,1 @@
-# term-canvas
+# term-canvas-py
