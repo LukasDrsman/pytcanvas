@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
         name="pytermcanvas",
-        version="0.0.1",
+        version="0.0.2",
         author="Lukáš Dršman",
         author_email="lukaskodr@gmail.com",
         description="Minimal terminal canvas",
         long_description=long_description,
-        long_description_content_type="text/markdown"
+        long_description_content_type="text/markdown",
         url="https://github.com/LukasDrsman/term-canvas-py",
         packages=setuptools.find_packages(),
         classifiers=[
