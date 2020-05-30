@@ -1,1 +1,1 @@
-# pytcanvas
+# term-canvas
