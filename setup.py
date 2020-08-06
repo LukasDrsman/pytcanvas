@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
         name="pytermcanvas",
-        version="0.0.2",
+        version="1.0.0",
         author="Lukáš Dršman",
         author_email="lukaskodr@gmail.com",
         description="Minimal terminal canvas",

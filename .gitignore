@@ -1,4 +1,4 @@
 build/
 dist/
 pytermcanvas.egg-info/
-
+pytermcanvas/__pychache__/*
